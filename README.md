@@ -49,7 +49,7 @@ Place scripts in your Maya scripts directory or source them manually
 
 INSTALLATION
 You can either clone the repository or download the ZIP.
-git clone https://github.com/yourusername/maya-tools.git
+git clone https://github.com/yiminfffff/yfu_pyTools.git
 
 
 LICENSE
