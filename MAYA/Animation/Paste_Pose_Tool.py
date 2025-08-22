@@ -176,10 +176,10 @@ def show_ui():
     if cmds.window("CopyPasteAnimWin", exists=True):
         cmds.deleteUI("CopyPasteAnimWin")
 
-    win = cmds.window("CopyPasteAnimWin", title="Cross-Project Keyframes", widthHeight=(260, 140))
+    win = cmds.window("CopyPasteAnimWin", title="Paste Pose Tool", widthHeight=(260, 140))
     cmds.columnLayout(adjustableColumn=True)
-    cmds.button(label="Copy Keyframes", command=lambda x: copy_keyframes())
-    cmds.button(label="Paste Keyframes", command=lambda x: paste_keyframes())
+    cmds.button(label="Copy", command=lambda x: copy_keyframes())
+    cmds.button(label="Paste", command=lambda x: paste_keyframes())
     cmds.checkBox("autoMatchCB", label="Auto Match Namespaces",
                   value=AUTO_MATCH,
                   onc=lambda x: set_auto_match(True),
