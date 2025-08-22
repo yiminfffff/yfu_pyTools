@@ -1,22 +1,21 @@
-# -*- coding: utf-8 -*-
-# Maya cross-project keyframe copy/paste with namespace auto match & manual mapping
-# Author: GPT
-
 import maya.cmds as cmds
 import json
 import os
 
+# Temp files
 TEMP_FILE = os.path.join(cmds.internalVar(userAppDir=True), "keyframe_clipboard.json")
-AUTO_MATCH = False  # auto match toggle
 MAPPING_FILE = os.path.join(cmds.internalVar(userAppDir=True), "keyframe_mapping.json")
 
+# Global toggle for auto namespace match
+AUTO_MATCH = False
+
+# Utility Functions
 
 def strip_namespace(name):
     """Return object name without namespace/prefix"""
     if ":" in name:
         return name.split(":")[-1]
     return name
-
 
 def load_mapping():
     """Load user-defined mapping table from JSON"""
@@ -25,14 +24,15 @@ def load_mapping():
             return json.load(f)
     return {}
 
-
 def save_mapping(mapping):
     """Save user-defined mapping table to JSON"""
     with open(MAPPING_FILE, "w") as f:
         json.dump(mapping, f, indent=2)
 
+# Copy Paste
 
 def copy_keyframes():
+    """Copy selected objects' keyframes to clipboard JSON"""
     sel = cmds.ls(sl=True)
     if not sel:
         cmds.warning("No objects selected.")
@@ -62,9 +62,10 @@ def copy_keyframes():
         json.dump(data, f, indent=2)
 
     cmds.inViewMessage(amg="Keyframes copied to clipboard", pos="midCenter", fade=True)
-
+    print("Copied keyframes:", list(data.keys()))
 
 def paste_keyframes():
+    """Paste keyframes from clipboard JSON to current scene objects"""
     if not os.path.exists(TEMP_FILE):
         cmds.warning("No clipboard file found.")
         return
@@ -74,20 +75,20 @@ def paste_keyframes():
 
     scene_objs = cmds.ls(long=True)
     mapping = load_mapping()
+    current_time = cmds.currentTime(query=True)
 
     for src_obj, attrs in data.items():
         target_obj = None
 
-        # 1. manual mapping
-        if src_obj in mapping:
-            if cmds.objExists(mapping[src_obj]):
-                target_obj = mapping[src_obj]
+        # Manual mapping
+        if src_obj in mapping and cmds.objExists(mapping[src_obj]):
+            target_obj = mapping[src_obj]
 
-        # 2. strict match
+        # Strict match
         if not target_obj and cmds.objExists(src_obj):
             target_obj = src_obj
 
-        # 3. auto match
+        # Auto namespace match
         if not target_obj and AUTO_MATCH:
             src_short = strip_namespace(src_obj)
             matches = [o for o in scene_objs if strip_namespace(o) == src_short]
@@ -104,43 +105,45 @@ def paste_keyframes():
                 cmds.warning(f"Attr {full_attr} missing, skipping...")
                 continue
 
-            # Apply keyframes
-            for t, v in zip(info["times"], info["values"]):
-                cmds.setKeyframe(full_attr, time=t, value=v)
+            # Paste at current time
+            source_times = info["times"]
+            if source_times:
+                offset = current_time - source_times[0]  # Earliest frame aligns with current time
+            else:
+                offset = 0
 
-            # Apply tangents
+            for t, v in zip(source_times, info["values"]):
+                cmds.setKeyframe(full_attr, time=t + offset, value=v)
+
+            # Apply tangents (rough implementation)
             try:
                 cmds.keyTangent(full_attr, edit=True,
                                 inAngle=info["inTan"], outAngle=info["outTan"])
             except:
                 pass
 
-    cmds.inViewMessage(amg="Keyframes pasted", pos="midCenter", fade=True)
+    cmds.inViewMessage(amg="Keyframes pasted at current time", pos="midCenter", fade=True)
+    print("Pasted keyframes for objects:", list(data.keys()))
 
-
-# -------- UI --------
-def show_ui():
-    global AUTO_MATCH
-    if cmds.window("CopyPasteAnimWin", exists=True):
-        cmds.deleteUI("CopyPasteAnimWin")
-
-    win = cmds.window("CopyPasteAnimWin", title="Cross-Project Keyframes", widthHeight=(260, 140))
-    cmds.columnLayout(adjustableColumn=True)
-    cmds.button(label="Copy Keyframes", command=lambda x: copy_keyframes())
-    cmds.button(label="Paste Keyframes", command=lambda x: paste_keyframes())
-    cmds.checkBox("autoMatchCB", label="Auto Match Namespaces",
-                  value=AUTO_MATCH,
-                  onc=lambda x: set_auto_match(True),
-                  ofc=lambda x: set_auto_match(False))
-    cmds.button(label="Edit Mapping Table", command=lambda x: edit_mapping())
-    cmds.showWindow(win)
-
+# UI Functions
 
 def set_auto_match(state):
+    """Set global auto namespace match toggle"""
     global AUTO_MATCH
     AUTO_MATCH = state
     cmds.inViewMessage(amg=f"Auto Match set to {state}", pos="midCenter", fade=True)
+    print("Auto Match:", state)
 
+def save_mapping_ui(text_field):
+    """Save mapping from text editor"""
+    text = cmds.scrollField(text_field, query=True, text=True)
+    try:
+        mapping = json.loads(text)
+        save_mapping(mapping)
+        cmds.inViewMessage(amg="Mapping saved", pos="midCenter", fade=True)
+        print("Mapping saved:", mapping)
+    except Exception as e:
+        cmds.warning(f"Invalid JSON: {e}")
 
 def edit_mapping():
     """Open a simple text editor window to edit mapping dict"""
@@ -165,16 +168,24 @@ def edit_mapping():
                     attachControl=[(text_field, 'bottom', 5, save_btn)])
 
     cmds.showWindow(win)
+    cmds.refresh()
 
+def show_ui():
+    """Display main UI window"""
+    global AUTO_MATCH
+    if cmds.window("CopyPasteAnimWin", exists=True):
+        cmds.deleteUI("CopyPasteAnimWin")
 
-def save_mapping_ui(text_field):
-    """Save user edits from mapping editor"""
-    text = cmds.scrollField(text_field, query=True, text=True)
-    try:
-        mapping = json.loads(text)
-        save_mapping(mapping)
-        cmds.inViewMessage(amg="Mapping saved", pos="midCenter", fade=True)
-    except Exception as e:
-        cmds.warning(f"Invalid JSON: {e}")
+    win = cmds.window("CopyPasteAnimWin", title="Cross-Project Keyframes", widthHeight=(260, 140))
+    cmds.columnLayout(adjustableColumn=True)
+    cmds.button(label="Copy Keyframes", command=lambda x: copy_keyframes())
+    cmds.button(label="Paste Keyframes", command=lambda x: paste_keyframes())
+    cmds.checkBox("autoMatchCB", label="Auto Match Namespaces",
+                  value=AUTO_MATCH,
+                  onc=lambda x: set_auto_match(True),
+                  ofc=lambda x: set_auto_match(False))
+    cmds.button(label="Edit Mapping Table", command=lambda x: edit_mapping())
+    cmds.showWindow(win)
+    cmds.refresh()
 
 show_ui()
