@@ -2,20 +2,16 @@ import maya.cmds as cmds
 import json
 import os
 
-# Path to store copied keyframes
-KEYFRAME_FILE = os.path.join(cmds.internalVar(userAppDir=True), "copied_keys.json")
 
-def copy_selected_keyframes():
-    """Copy only selected keyframes and save them into a json file"""
-    # Get selected keyframes
+def copy_selected_keyframes(*_):
+    """Copy only selected keyframes and save them into memory"""
     selected_keys = cmds.keyframe(query=True, selected=True, name=True)
     if not selected_keys:
         cmds.warning("No keyframes selected.")
-        return
+        return None
 
     data = {}
     for key in selected_keys:
-        # Get curve and frame info
         curve = key.split(".")[0]
         times = cmds.keyframe(key, query=True, selected=True, timeChange=True)
         values = cmds.keyframe(key, query=True, selected=True, valueChange=True)
@@ -25,27 +21,23 @@ def copy_selected_keyframes():
         for t, v in zip(times, values):
             data[curve].append({"time": t, "value": v})
 
-    with open(KEYFRAME_FILE, "w") as f:
-        json.dump(data, f, indent=2)
-
+    # Save data into memory
+    cmds.optionVar(stringValue=("lastCopiedKeys", json.dumps(data)))
     print("Copied selected keyframes.")
+    return data
 
 
-def paste_keyframes_at_current_time():
+def paste_keyframes_at_current_time(data=None, *_):
     """Paste copied keyframes at the current time, keeping relative spacing"""
-    if not os.path.exists(KEYFRAME_FILE):
-        cmds.warning("No copied keyframe data found.")
-        return
-
-    with open(KEYFRAME_FILE, "r") as f:
-        data = json.load(f)
+    # If called from button, data may be a bool, ignore it
+    if not isinstance(data, dict):
+        if not cmds.optionVar(exists="lastCopiedKeys"):
+            cmds.warning("No copied keyframe data found.")
+            return
+        data = json.loads(cmds.optionVar(query="lastCopiedKeys"))
 
     current_time = cmds.currentTime(query=True)
-
-    # Find earliest keyframe time in copied data
-    earliest_time = min(
-        t["time"] for keys in data.values() for t in keys
-    )
+    earliest_time = min(t["time"] for keys in data.values() for t in keys)
 
     for curve, keys in data.items():
         for entry in keys:
@@ -56,17 +48,49 @@ def paste_keyframes_at_current_time():
     print("Pasted keyframes at current time.")
 
 
+def write_pose_file(*_):
+    """Copy currently selected keyframes and write them to a JSON file"""
+    data = copy_selected_keyframes()
+    if not data:
+        return
+
+    filepath = cmds.fileDialog2(fileMode=0, caption="Save Pose File")  # 0 = save file
+    if filepath:
+        with open(filepath[0], "w") as f:
+            json.dump(data, f, indent=2)
+        print("Pose file written:", filepath[0])
+
+
+def read_pose_file(*_):
+    """Open a file dialog to choose file and read/paste keyframes"""
+    filepath = cmds.fileDialog2(fileMode=1, caption="Open Pose File")  # 1 = open file
+    if not filepath:
+        return
+
+    with open(filepath[0], "r") as f:
+        data = json.load(f)
+    paste_keyframes_at_current_time(data)
+
+
 def show_ui():
-    """Create a small UI with Copy and Paste buttons"""
+    """Create UI with two button groups (Copy/Paste and Write/Read) with spacing"""
     if cmds.window("keyframeCopyPasteUI", exists=True):
         cmds.deleteUI("keyframeCopyPasteUI")
 
-    window = cmds.window("keyframeCopyPasteUI", title="Paste Pose Tool", widthHeight=(200, 80))
+    window = cmds.window("keyframeCopyPasteUI", title="Paste Pose Tool", widthHeight=(200, 150))
     layout = cmds.columnLayout(adjustableColumn=True, columnAlign="center")
 
-    cmds.button(label="Copy", command=lambda x: copy_selected_keyframes())
-    cmds.button(label="Paste", command=lambda x: paste_keyframes_at_current_time())
+    # Copy Paste
+    cmds.button(label="Copy", command=copy_selected_keyframes)
+    cmds.button(label="Paste", command=paste_keyframes_at_current_time)
+
+    cmds.text(label="", height=10)
+
+    # Read Write 
+    cmds.button(label="Write", command=write_pose_file)
+    cmds.button(label="Read", command=read_pose_file)
 
     cmds.showWindow(window)
+
 
 show_ui()
