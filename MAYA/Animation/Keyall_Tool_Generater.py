@@ -34,7 +34,6 @@ def generate_keyframe_tool():
 
         if select_only:
             script_content = f"""
-import maya.cmds as cmds
 
 def select_stored_objects():
     stored_objects = {selected_objects_str}
@@ -46,7 +45,7 @@ def select_stored_objects():
 
 select_stored_objects()
 """
-            tool_label = "Set (Select Only)"
+            tool_label = "Set"
             tool_annotation = "Select only the stored objects"
         else:
             script_content = f"""
@@ -86,14 +85,15 @@ add_keyframes_to_objects()
     if cmds.window("KeyframeToolWin", exists=True):
         cmds.deleteUI("KeyframeToolWin")
 
-    win = cmds.window("KeyframeToolWin", title="Keyframe Tool Setup", sizeable=True, width=300, height=180)
+    win = cmds.window("KeyframeToolWin", title="Set Keys Tool", sizeable=True, width=300, height=180)
     layout = cmds.columnLayout(adjustableColumn=True, columnAlign="center", width=300)
-    cmds.text(label="Select channels to keyframe:", align="center", height=30)
-    move_cb = cmds.checkBox(label="Translate (move)", align="left", width=200)
-    rotate_cb = cmds.checkBox(label="Rotate (rotate)", align="left", width=200)
-    select_only_cb = cmds.checkBox(label="Set (Select Only)", align="left", width=200)
+    cmds.text(label="What would you like to do?", align="center", height=30)
+    move_cb = cmds.checkBox(label="Translate", align="left", width=200)
+    rotate_cb = cmds.checkBox(label="Rotate", align="left", width=200)
+    select_only_cb = cmds.checkBox(label="Set", align="left", width=200)
 
-    cmds.separator(height=10)
+    cmds.text(label="", height=10)
+
     cmds.button(label="Confirm", height=40, command=confirm_selection)
     cmds.setParent(layout)
     cmds.showWindow(win)
