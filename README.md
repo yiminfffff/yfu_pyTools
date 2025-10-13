@@ -13,10 +13,11 @@ Keyall Tool Generater
 Mocap Setup 
 - Quick cleanup for mocap datas.
 
-Paste Pose Tool 
+Paste Pose Tool
 - Paste keyframes across files.
 
-
+Force Baking Tool
+- For baking naughty objects.
 
 
 RIGGING
@@ -45,6 +46,5 @@ Zero Up
 
 REQUIREMENTS
 
-Autodesk Maya 2020 or newer, 
-Python 2.7+ or 3.x, 
-Place scripts in your Maya scripts directory or source them manually.
+Autodesk Maya 2020 or later (Python 3.0)
+To install place scripts in Maya scripts directory or source them manually.
