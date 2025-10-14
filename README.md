@@ -46,7 +46,7 @@ Weight Clean
 Zero Up 
 - Zeros out transforms by adding groups, preserving offsets for controllers or objects.
 
-- Add locator 
+Add locator 
 - Create and teleports a new locator to selected object.
 
 ---
