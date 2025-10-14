@@ -1,0 +1,33 @@
+import maya.cmds as cmds
+
+def create_locator_match_transform_preserve_selection():
+    # Get currently selected objects and save the selection state
+    selected_objects = cmds.ls(selection=True)
+    if not selected_objects:
+        cmds.warning("Please select an object (controller) first")
+        return
+    
+    # Get transform attributes of the first selected object
+    target = selected_objects[0]
+    
+    # Get position, rotation, and scale of the target object
+    pos = cmds.xform(target, query=True, worldSpace=True, translation=True)
+    rot = cmds.xform(target, query=True, worldSpace=True, rotation=True)
+    scale = cmds.getAttr(target + ".scale")[0]
+    
+    # Create a locator
+    locator = cmds.spaceLocator(name="locator#")[0]
+    
+    # Match transform attributes
+    cmds.xform(locator, worldSpace=True, translation=pos)
+    cmds.xform(locator, worldSpace=True, rotation=rot)
+    cmds.setAttr(locator + ".scale", scale[0], scale[1], scale[2])
+    
+    # Restore original selection state
+    cmds.select(selected_objects, replace=True)
+    
+    print("Locator created and matched to selected object: {}".format(target))
+    print("Original selection state restored")
+
+# Execute the function
+create_locator_match_transform_preserve_selection()
