@@ -1,6 +1,7 @@
-Tools Collection
+YFU Tools Collection
 This repository contains a set of Python tools for Autodesk Maya, developed during the course of production to streamline animation and rigging workflows.
 
+---
 
 ANIMATION
 
@@ -19,8 +20,7 @@ Paste Pose Tool
 Force Baking Tool
 - For baking naughty objects.
 
-
-
+---
 
 RIGGING
 
@@ -45,6 +45,10 @@ Weight Clean
 Zero Up 
 - Zeros out transforms by adding groups, preserving offsets for controllers or objects.
 
+- Add locator 
+- Create and teleports a new locator to selected object.
+
+---
 
 REQUIREMENTS
 
