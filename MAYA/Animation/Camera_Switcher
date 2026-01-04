@@ -1,0 +1,173 @@
+import maya.cmds as cmds
+import os
+
+
+###PUT THIS CODE IN DOUBLE CLICK COMMAND: set_target_camera()###
+
+
+# Temporary file path used to store the target camera name
+# This file persists even after restarting Maya
+
+TEMP_DIR = cmds.internalVar(userTmpDir=True)
+TARGET_CAMERA_FILE = os.path.join(TEMP_DIR, "maya_toggle_view_target_camera.txt")
+
+
+
+# Utility: get short name from full path (for UI / printing only)
+
+def short_name(node):
+    return node.split("|")[-1] if node else node
+
+
+
+# Function: set_target_camera
+# Stores the currently selected camera transform into a temp file
+# The file is overwritten every time this function is executed
+# Provides clear visual feedback in the viewport
+
+def set_target_camera():
+    selection = cmds.ls(selection=True, long=True)
+
+    if not selection:
+        cmds.warning("No camera selected.")
+        return
+
+    cam = selection[0]
+
+    # Ensure the selected object is a camera transform
+    shapes = cmds.listRelatives(cam, shapes=True, type="camera")
+    if not shapes:
+        cmds.warning("Selected object is not a camera transform.")
+        return
+
+    try:
+        with open(TARGET_CAMERA_FILE, "w") as f:
+            f.write(cam)
+
+        cam_short = short_name(cam)
+
+        # Console feedback
+        print("Target camera saved:", cam_short)
+
+        # Viewport feedback (top of the viewport, non-intrusive)
+        cmds.inViewMessage(
+            amg="<hl>Target Camera Set:</hl> {}".format(cam_short),
+            pos="topCenter",
+            fade=True
+        )
+
+    except Exception as e:
+        cmds.warning("Failed to save target camera: %s" % e)
+
+
+
+# Function: read_target_camera
+# Reads the target camera name from the temp file
+# Falls back to a default camera if the file is missing or invalid
+
+def read_target_camera(default="|persp"):
+    if os.path.exists(TARGET_CAMERA_FILE):
+        try:
+            with open(TARGET_CAMERA_FILE, "r") as f:
+                cam = f.read().strip()
+                if cam and cmds.objExists(cam):
+                    return cam
+        except:
+            pass
+    return default
+
+
+
+# Resolve a valid modelPanel to operate on
+
+def get_active_model_panel():
+    panel = cmds.getPanel(withFocus=True)
+    if panel and cmds.getPanel(typeOf=panel) == "modelPanel":
+        return panel
+
+    # Fallback: return the first visible modelPanel
+    for p in cmds.getPanel(type="modelPanel"):
+        if cmds.modelEditor(p, q=True, visible=True):
+            return p
+
+    return None
+
+
+
+# Global variable holding the current target camera
+# This is evaluated every time the script is executed
+
+TARGET_CAMERA = read_target_camera()
+
+
+
+# Function: toggle_view
+# Toggles the active modelPanel between persp and the stored target camera
+
+def toggle_view():
+    panel = get_active_model_panel()
+    if not panel:
+        cmds.warning("No active modelPanel found.")
+        return
+
+    current_camera = cmds.modelEditor(panel, q=True, camera=True)
+
+    # Always compare transform names, never shapes
+    if cmds.objectType(current_camera, isType="camera"):
+        parents = cmds.listRelatives(current_camera, parent=True, fullPath=True)
+        if parents:
+            current_camera = parents[0]
+
+    # Normalize persp naming (Maya may return 'persp' or '|persp')
+    if current_camera.endswith("persp"):
+        current_camera = "|persp"
+
+    if current_camera == TARGET_CAMERA:
+        # Switch back to perspective view
+        cmds.lookThru(panel, "persp")
+        cmds.setAttr("hardwareRenderingGlobals.multiSampleEnable", 0)
+        cmds.modelEditor(panel, e=True, allObjects=True)
+        print("viewport: persp")
+
+    else:
+        # Switch to target camera
+        if not cmds.objExists(TARGET_CAMERA):
+            cmds.warning("Target camera does not exist: %s" % TARGET_CAMERA)
+            return
+
+        cmds.lookThru(panel, TARGET_CAMERA)
+        cmds.setAttr("hardwareRenderingGlobals.multiSampleEnable", 1)
+        cmds.setAttr("hardwareRenderingGlobals.multiSampleCount", 8)
+
+        cmds.modelEditor(
+            panel,
+            e=True,
+            allObjects=False,
+            polymeshes=True,
+            nurbsCurves=False,
+            nurbsSurfaces=False,
+            subdivSurfaces=False,
+            planes=False,
+            lights=False,
+            cameras=False,
+            joints=False,
+            ikHandles=False,
+            deformers=False,
+            dynamics=False,
+            particleInstancers=False,
+            fluids=False,
+            hairSystems=False,
+            follicles=False,
+            nCloths=False,
+            nRigids=False,
+            dynamicConstraints=False,
+            locators=False
+        )
+
+        print("viewport:", short_name(TARGET_CAMERA))
+
+
+
+# Execute toggle
+
+toggle_view()
