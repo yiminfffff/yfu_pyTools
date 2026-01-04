@@ -21,6 +21,12 @@ Paste Pose Tool
 Force Baking Tool
 - For baking naughty objects.
 
+Add Locator
+- Create locator and match transform to current selection.
+
+Camera Switcher
+- Switch camera and viewport settings between persp and target, edit target by double clicking.
+
 ---
 
 RIGGING
@@ -46,8 +52,8 @@ Weight Clean
 Zero Up 
 - Zeros out transforms by adding groups, preserving offsets for controllers or objects.
 
-Add locator 
-- Create and teleports a new locator to selected object.
+Delete Constraints
+- Delete all constraints in selection
 
 ---
 
