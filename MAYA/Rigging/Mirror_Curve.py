@@ -1,7 +1,6 @@
 import re
 import maya.cmds as cmds
 
-EPS = 1e-5
 
 SIDE_PATTERNS = [
     (r"(^L_)", "R_"), (r"(^R_)", "L_"),
@@ -123,3 +122,4 @@ def mirror_selected(freeze_after=False):
 
 if __name__ == '__main__':
     mirror_selected()
+
