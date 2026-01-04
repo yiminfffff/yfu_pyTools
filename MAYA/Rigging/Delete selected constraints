@@ -1,0 +1,42 @@
+import maya.cmds as cmds
+
+def delete_constraints_in_selection():
+    # Get selected objects using full DAG paths to avoid name conflicts
+    sel = cmds.ls(sl=True, long=True)
+    if not sel:
+        cmds.warning("No objects selected.")
+        return
+
+    constraints_to_delete = set()
+
+    for obj in sel:
+        # Find constraint nodes under the selected object's DAG hierarchy
+        descendants = cmds.listRelatives(
+            obj,
+            allDescendents=True,
+            fullPath=True
+        ) or []
+
+        for node in descendants:
+            # Check node type explicitly to avoid name-based errors
+            if cmds.nodeType(node).endswith("Constraint"):
+                constraints_to_delete.add(node)
+
+        # Find constraint nodes in construction history
+        history = cmds.listHistory(obj, pruneDagObjects=True) or []
+        for h in history:
+            if cmds.nodeType(h).endswith("Constraint"):
+                # Convert to full path if possible
+                long_name = cmds.ls(h, long=True)
+                if long_name:
+                    constraints_to_delete.add(long_name[0])
+
+    if not constraints_to_delete:
+        print("No constraints found.")
+        return
+
+    # Delete constraints using full DAG paths (safe even with duplicate short names)
+    cmds.delete(list(constraints_to_delete))
+    print("Deleted constraints:", list(constraints_to_delete))
+
+delete_constraints_in_selection()
