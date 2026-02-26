@@ -1,0 +1,44 @@
+import maya.cmds as cmds
+
+def step_keys(step=3, start_from_zero=True):
+
+    sel = cmds.ls(sl=True)
+    if not sel:
+        cmds.warning("Select objects.")
+        return
+
+    start = int(cmds.playbackOptions(q=True, min=True))
+    end = int(cmds.playbackOptions(q=True, max=True))
+
+    curves = cmds.listConnections(sel, type="animCurve") or []
+    curves = list(set(curves))
+
+    if start_from_zero:
+        base = 0
+    else:
+        base = start
+
+    # Save keys
+    keep_frames = set()
+    f = base
+    while f <= end:
+        if f >= start:
+            keep_frames.add(f)
+        f += step
+
+    for curve in curves:
+
+        # Key every 3 frames
+        for f in keep_frames:
+            cmds.setKeyframe(curve, t=f, insert=True)
+
+        # Del other keys
+        keys = cmds.keyframe(curve, q=True) or []
+        for k in keys:
+            if start <= k <= end and int(round(k)) not in keep_frames:
+                cmds.cutKey(curve, time=(k, k))
+
+    print("Stepped keys every {} frames.".format(step))
+
+
+step_keys(3, True)
