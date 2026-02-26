@@ -27,6 +27,8 @@ Add Locator
 Camera Switcher
 - Switch camera and viewport settings between persp and target, edit target by double clicking.
 
+DELnKEY
+- Key every 3 frames and remove other keys.
 ---
 
 RIGGING
