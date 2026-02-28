@@ -29,6 +29,10 @@ Camera Switcher
 
 DELnKEY
 - Key every 3 frames and remove other keys.
+
+Zero Value
+- Zero up selected objects.
+
 ---
 
 RIGGING
