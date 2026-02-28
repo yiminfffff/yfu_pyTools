@@ -1,0 +1,29 @@
+import maya.cmds as cmds
+
+def reset_trs_safe():
+    sel = cmds.ls(sl=True, type='transform')
+    
+    if not sel:
+        cmds.warning("Nothing selected.")
+        return
+
+    attrs = {
+        "tx":0, "ty":0, "tz":0,
+        "rx":0, "ry":0, "rz":0,
+        "sx":1, "sy":1, "sz":1
+    }
+
+    for obj in sel:
+        for attr, value in attrs.items():
+            full = obj + "." + attr
+            
+            if cmds.objExists(full):
+                if not cmds.getAttr(full, lock=True):
+                    try:
+                        cmds.setAttr(full, value)
+                    except:
+                        pass
+
+    print("Reset TRS on {} objects".format(len(sel)))
+
+reset_trs_safe()
