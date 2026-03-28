@@ -1,0 +1,44 @@
+import maya.cmds as cmds
+
+def unhide_all_channels():
+    """
+    Unhides (makes keyable) the default transform channels (Translate, Rotate, Scale) 
+    and Visibility for all selected objects.
+    """
+    
+    # Get the list of selected objects
+    selection = cmds.ls(selection=True)
+    
+    if not selection:
+        cmds.warning("No objects selected.")
+        return
+
+    # Define the suffixes for the attributes we want to unhide
+    transform_suffixes = ['tx', 'ty', 'tz', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz']
+    visibility_suffix = 'v'
+    
+    count = 0
+    
+    for obj in selection:
+        # Check if the object is a valid transform node (or has a shape)
+        # We check if it's a transform type or a shape to be safe
+        if cmds.objectType(obj, isType='transform') or cmds.objectType(obj, isType='shape'):
+            
+            # Unhide Transform Channels (Translate, Rotate, Scale)
+            for suffix in transform_suffixes:
+                attr = f"{obj}.{suffix}"
+                # Check if attribute exists to avoid errors on specific node types
+                if cmds.objExists(attr):
+                    cmds.setAttr(attr, channelBox=True, keyable=True)
+            
+            # Unhide Visibility Channel
+            vis_attr = f"{obj}.{visibility_suffix}"
+            if cmds.objExists(vis_attr):
+                cmds.setAttr(vis_attr, channelBox=True, keyable=True)
+                
+            count += 1
+            
+    print(f"Successfully unhidden channels for {count} objects.")
+
+# Execute the function
+unhide_all_channels()
