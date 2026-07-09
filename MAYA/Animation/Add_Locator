@@ -1,33 +1,37 @@
 import maya.cmds as cmds
 
-def create_locator_match_transform_preserve_selection():
-    # Get currently selected objects and save the selection state
-    selected_objects = cmds.ls(selection=True)
-    if not selected_objects:
-        cmds.warning("Please select an object (controller) first")
-        return
-    
-    # Get transform attributes of the first selected object
-    target = selected_objects[0]
-    
-    # Get position, rotation, and scale of the target object
-    pos = cmds.xform(target, query=True, worldSpace=True, translation=True)
-    rot = cmds.xform(target, query=True, worldSpace=True, rotation=True)
-    scale = cmds.getAttr(target + ".scale")[0]
-    
-    # Create a locator
-    locator = cmds.spaceLocator(name="locator#")[0]
-    
-    # Match transform attributes
-    cmds.xform(locator, worldSpace=True, translation=pos)
-    cmds.xform(locator, worldSpace=True, rotation=rot)
-    cmds.setAttr(locator + ".scale", scale[0], scale[1], scale[2])
-    
-    # Restore original selection state
-    cmds.select(selected_objects, replace=True)
-    
-    print("Locator created and matched to selected object: {}".format(target))
-    print("Original selection state restored")
+def create_locator_at_pivot():
+    # Get selected objects
+    selection = cmds.ls(selection=True, long=True)
 
-# Execute the function
-create_locator_match_transform_preserve_selection()
+    if not selection:
+        cmds.warning("No object selected.")
+        return
+
+    created_locators = []
+
+    for obj in selection:
+        # Get world-space rotate pivot position
+        pivot_position = cmds.xform(obj, query=True, worldSpace=True, rotatePivot=True)
+
+        # Get world-space rotation
+        rotation = cmds.xform(obj, query=True, worldSpace=True, rotation=True)
+
+        # Create locator
+        locator = cmds.spaceLocator(name=f"{obj.split('|')[-1]}_pivot_loc")[0]
+
+        # Move locator to pivot position
+        cmds.xform(locator, worldSpace=True, translation=pivot_position)
+
+        # Match locator rotation to object rotation
+        cmds.xform(locator, worldSpace=True, rotation=rotation)
+
+        created_locators.append(locator)
+
+    # Select created locators
+    cmds.select(created_locators)
+
+    print("Done: Locators created at pivot points.")
+
+# Execute function
+create_locator_at_pivot()
