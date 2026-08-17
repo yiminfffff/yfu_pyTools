@@ -47,7 +47,7 @@ Mirror Curve
 - Mirrors controller across for symmetrical setups.
 
 Set Curve Colour 
-- Batch color assignment to NURBS controls.
+- Batch colour assignment to NURBS controls.
 
 Show Local Rotation Axis 
 - Reveals local rotation axes for selected joints.
@@ -59,7 +59,16 @@ Zero Up
 - Zeros out transforms by adding groups, preserving offsets for controllers or objects.
 
 Delete Constraints
-- Delete all constraints in selection
+- Delete all constraints in selection.
+
+Smart_Namer
+- Run to activate listen mode, this tool will auto predict possible names. And ask you before changing them.
+
+Place_Curves
+- Place curves to joints, with smart names, colour, and radius.
+
+Build_Master_Controllers
+- Build master controllers by user's choice
 
 ---
 
