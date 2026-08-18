@@ -70,6 +70,9 @@ Place_Curves
 Build_Master_Controllers
 - Build master controllers by user's choice
 
+Better Set Driven Key
+- Store poses while keying, easy for edit.
+
 ---
 
 REQUIREMENTS
