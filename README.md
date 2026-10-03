@@ -13,7 +13,7 @@ Keyall Tool Generater
 - One click solution to key all attributes on selected objects.
 
 Mocap Setup 
-- Quick cleanup for mocap datas.
+- Zero up skeleton, move to target frame and define HumanIK.
 
 Paste Pose Tool
 - Paste keyframes across files.
@@ -32,6 +32,9 @@ DELnKEY
 
 Zero Value
 - Zero up selected objects.
+
+FBX Exproter
+- Get your fbx without starting maya.
 
 ---
 
