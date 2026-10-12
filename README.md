@@ -36,6 +36,9 @@ Zero Value
 FBX Exproter
 - Get your fbx without starting maya.
 
+Locator for Curve
+- Place a locator wherever you like, and make it child, for visualising curves.
+
 ---
 
 RIGGING
