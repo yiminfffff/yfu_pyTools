@@ -79,6 +79,9 @@ Build_Master_Controllers
 Better Set Driven Key
 - Store poses while keying, easy for edit.
 
+Auto Parent Child
+- Detect by names, sort controllers and their group above in parent child order.
+
 ---
 
 REQUIREMENTS
