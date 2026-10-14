@@ -68,7 +68,7 @@ Delete Constraints
 - Delete all constraints in selection.
 
 Smart_Namer
-- Run to activate listen mode, this tool will auto predict possible names. And ask you before changing them.
+- Rig namer that thinks ahead of you.
 
 Place_Curves
 - Place curves to joints, with smart names, colour, and radius.
