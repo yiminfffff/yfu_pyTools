@@ -1,9 +1,7 @@
 import maya.cmds as cmds
 
 
-# ------------------------------------------------------------
 # Controller settings
-# ------------------------------------------------------------
 
 COLOR_BLUE = 6
 COLOR_RED = 13
@@ -38,9 +36,7 @@ RADIUS_1 = {
 }
 
 
-# ------------------------------------------------------------
 # Name utilities
-# ------------------------------------------------------------
 
 def get_short_name(node):
     """Return the short DAG name."""
@@ -97,9 +93,7 @@ def get_joint_type(joint_name):
     return None
 
 
-# ------------------------------------------------------------
 # Radius
-# ------------------------------------------------------------
 
 def get_ctrl_radius(joint_name):
     """Return controller radius based on anatomical joint type."""
@@ -119,9 +113,7 @@ def get_ctrl_radius(joint_name):
     return 1.0
 
 
-# ------------------------------------------------------------
 # Color
-# ------------------------------------------------------------
 
 def get_ctrl_color(joint_name):
     """Return controller color based on joint side."""
@@ -161,9 +153,7 @@ def set_curve_color(ctrl, color_index):
         )
 
 
-# ------------------------------------------------------------
 # Controller creation
-# ------------------------------------------------------------
 
 def create_ctrl_for_joint(joint):
     """Create one circle controller for a joint."""
@@ -207,9 +197,7 @@ def create_ctrl_for_joint(joint):
     return ctrl
 
 
-# ------------------------------------------------------------
 # Main
-# ------------------------------------------------------------
 
 def create_controls_from_selection():
     """Create controllers for all selected joints."""
