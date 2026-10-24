@@ -1,11 +1,3 @@
-"""Create a staged three-control S-curve rig for Maya.
-
-Select the original controls and run this file. Numbered controls are sorted
-from the lowest number to the highest. The first pass creates only Root, Mid,
-and Tip placement controls. Set Build Now to 1 on any placement control and
-confirm the dialog to create the driver groups and constraints.
-"""
-
 from __future__ import division
 
 import functools
