@@ -1,6 +1,3 @@
-# Maya Python: select a controller and run this script.
-# Set the new locator's build attribute to 1 to create an editable motion curve.
-
 import math
 import maya.cmds as cmds
 
