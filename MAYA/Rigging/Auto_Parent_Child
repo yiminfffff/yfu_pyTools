@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Ctrl Chain Tool
-Parents each ctrl_XX_grp under the previous ctrl_XX in numerical order.
-Usage: Select all top-level groups (or controllers), then run this script.
-Result: ctrl_01_grp > ctrl_01 > ctrl_02_grp > ctrl_02 > ctrl_03_grp > ctrl_03
-"""
-
 import maya.cmds as cmds
 import re
 
