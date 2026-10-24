@@ -1,13 +1,3 @@
-"""Better Set Driven Key for Autodesk Maya.
-
-Run in Maya's Script Editor:
-
-    import muscle_definition_tool
-    muscle_definition_tool.show()
-
-All persistent data lives in Maya network nodes and is saved with the scene.
-"""
-
 from __future__ import annotations
 
 import json
