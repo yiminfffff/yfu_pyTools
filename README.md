@@ -84,6 +84,14 @@ Auto Parent Child
 
 ---
 
+HOUDINI
+
+APEX Mirror
+- Mirror setups from APEX AutoRig Component, including constraints.
+
+
+---
+
 REQUIREMENTS
 
 Autodesk Maya 2020 or later (Python 3.0)
