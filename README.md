@@ -1,6 +1,6 @@
 YFU Tools Collection
 
-This repository contains a set of Python tools for Autodesk Maya, developed during the course of production to streamline animation and rigging workflows.
+This repository contains a set of Python tools for Maya and Houdini, developed during the course of production to streamline animation and rigging workflows.
 
 ---
 
