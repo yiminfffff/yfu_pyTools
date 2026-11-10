@@ -1,9 +1,3 @@
-"""Select and mirror APEX Transform Driver setups inside Houdini.
-
-Run from a Python shelf tool with runpy.run_path(..., run_name='__main__').
-Tested with Houdini 22.0.466 and MILO_RIG_v033.hipnc.
-World means the character's SOP space, before any OBJ-level transform.
-"""
 from __future__ import annotations
 
 import copy
