@@ -6,7 +6,7 @@ This repository contains a set of Python tools for Maya and Houdini, developed d
 
 ANIMATION
 
-Animation Tweaker Tools 
+Animation Tweaker
 - Tweakeing the percentage between two keyframes for timing.
 
 Keyall Tool Generater 
@@ -89,8 +89,14 @@ HOUDINI
 Component Mirror
 - Mirror setups from APEX AutoRig Component, including constraints.
 
+APEX Animation Tweaker
+- Tweakeing the percentage between two keyframes for timing.
+
 Anim Selection Set
 - Create selection set for APEX controllers.
+
+Anim Motion Trails
+- Place a locator wherever you like, and make it child, for visualising curves.
 
 ---
 
