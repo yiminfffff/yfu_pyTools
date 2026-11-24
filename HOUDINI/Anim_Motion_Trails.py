@@ -1,27 +1,3 @@
-r"""Animation Motion Trails 1.1.5 -- Houdini 22 APEX Scene Animate shelf tool.
-
-Shelf tool (Python):
-    import runpy
-    runpy.run_path(r"D:\UH\L6SA\Showreel\APEX_Milo\Animation_Motion_Trails.py", run_name="__main__")
-
-Select ONE APEX transform control, click Locator, drag its viewport axes or center,
-then click Build (or press Enter in the viewport). Delete removes list selections.
-The playback range, sampling, cache updates, and guide size are automatic.
-The locator is a local offset, not a new rig control or constraint. Nothing is
-inserted into the rig, its channels, or its SOP connections. Definitions are
-stored as versioned JSON user data on the Animate SOP and travel with the HIP.
-
-Trails are viewport guides, not render geometry. The window must remain open.
-Closing releases the observers/drawables/timer; reopen to restore saved trails.
-Sampling uses the installed SideFX control-output API, without hou.setFrame or
-mesh evaluation. All HOM/APEX work stays on the UI thread. A read-only native
-animation observer invalidates caches; small idle batches rebuild after edits.
-Playback, scrubbing and control dragging suspend off-frame sampling.
-
-Support target: Houdini 22.0 (APEX APIs checked against 22.0.466). This file uses
-SideFX's internal APEX Python APIs, which can change in later Houdini releases.
-"""
-
 import json
 import math
 import os
