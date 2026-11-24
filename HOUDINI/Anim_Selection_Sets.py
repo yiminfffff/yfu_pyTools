@@ -1,13 +1,3 @@
-r"""Animation Selection Sets for Houdini (APEX and node controllers).
-
-Run this file from a Python shelf tool:
-    import runpy
-    runpy.run_path(r"D:\path\Animation_Selection_Sets.py", run_name="__main__")
-
-Data lives in /obj user data and is embedded when the HIP is saved.
-No external packages, sidecar files, or changes to rig geometry are required.
-"""
-
 import json
 import uuid
 
