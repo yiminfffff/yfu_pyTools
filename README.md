@@ -86,9 +86,11 @@ Auto Parent Child
 
 HOUDINI
 
-APEX Mirror
+Component Mirror
 - Mirror setups from APEX AutoRig Component, including constraints.
 
+Anim Selection Set
+- Create selection set for APEX controllers.
 
 ---
 
