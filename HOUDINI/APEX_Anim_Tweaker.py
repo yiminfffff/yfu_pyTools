@@ -1,16 +1,3 @@
-r"""Animation Tweaker 1.0.1 -- Houdini Python shelf tool (PySide6 / PySide2).
-
-Shelf tool, Script language: Python:
-    import runpy
-    runpy.run_path(r"D:\UH\L6SA\Showreel\APEX_Milo\Animation_Tweaker.py", run_name="__main__")
-
-Selected APEX controls (in the Animate state) take precedence over nodes.
-Each channel uses its own nearest keys STRICTLY before and after the playhead.
-The current key is excluded from the endpoints. value = A + (B-A)*percent/100.
-Only animated floating-point node parameters / APEX control channels are used.
-APEX integration uses the installed SideFX Animate-state APIs (Houdini 22).
-"""
-
 import math
 import traceback
 import weakref
