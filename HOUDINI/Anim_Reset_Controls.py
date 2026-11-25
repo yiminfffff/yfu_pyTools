@@ -1,15 +1,3 @@
-r"""Reset selected APEX controls immediately, without opening a window.
-
-Python shelf tool:
-    import runpy
-    runpy.run_path(r"D:\UH\L6SA\Showreel\APEX_Milo\Animation_Reset_Controls.py", run_name="__main__")
-
-Uses each control's rig defaults (normally translate/rotate = 0, scale = 1).
-Other control parameters return to their rig defaults as well. Existing
-animation is handled by Houdini's native reset operation, without clearing
-the animation curves. The operation is one undo step.
-"""
-
 import hou
 
 
