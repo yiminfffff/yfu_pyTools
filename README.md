@@ -98,6 +98,9 @@ Anim Selection Set
 Anim Motion Trails
 - Place a locator wherever you like, and make it child, for visualising curves.
 
+Anim Reset Controls
+- Zero up selected controllers.
+
 ---
 
 REQUIREMENTS
